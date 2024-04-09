@@ -1,9 +1,9 @@
 "use client";
 
+import axios from "axios";
 import React, { ReactElement } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { IoMdLogOut } from "react-icons/io";
 import { MdDashboard } from "react-icons/md";
 import { BiSolidFoodMenu } from "react-icons/bi";
 import { AiOutlineStock } from "react-icons/ai";
@@ -12,11 +12,11 @@ import { FaShoppingBag, FaProductHunt, FaClipboardList } from "react-icons/fa";
 import { CiLogout } from "react-icons/ci";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { FiAlertCircle } from "react-icons/fi";
-import { CiSettings } from "react-icons/ci";
 import AyahLogo from "/public/images/white-ayahcoding.png";
-import Head from "next/head";
 import { signOut, useSession } from "next-auth/react";
-import axios from "axios";
+import { IoMdLogOut } from "react-icons/io";
+import { CiSettings } from "react-icons/ci";
+import Head from "next/head";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 
@@ -137,6 +137,7 @@ const MainHeader = () => {
 
     if (response.status === 200) {
       signOut();
+
     } else {
       console.error(response.data?.message);
     }
@@ -184,10 +185,7 @@ const MainHeader = () => {
   );
 };
 
-const Menus: React.FC<{ menu: MenuItem[]; title: string }> = ({
-  menu,
-  title,
-}) => {
+const Menus: React.FC<{ menu: MenuItem[]; title: string }> = ({ menu, title}) => {
   return (
     <div>
       <h6 className="mb-2 text-xs sm:text-sm text-white">{title}</h6>

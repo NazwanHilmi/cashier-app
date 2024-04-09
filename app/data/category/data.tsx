@@ -17,7 +17,7 @@ type Category = {
     nama: string;
 }
 
-const DataCategory = async ({category} : {category : Category[]}) => {
+const DataCategory = ({category} : {category : Category[]}) => {
     const [data, setData] = useState<Category[]>(category)
     const [search, setSearch] = useState("");
 
@@ -35,8 +35,7 @@ const DataCategory = async ({category} : {category : Category[]}) => {
 
         setSearch(value)
     }
-  return (
-                       
+    return (
     <div>
         <header className='w-full p-4 bg-white shadow-lg'>
             <h1 className="text-lg font-montserrat font-semibold">{metadata.title}</h1>
@@ -78,7 +77,7 @@ const DataCategory = async ({category} : {category : Category[]}) => {
             </div>
         </div>
     </div>
-  )
+    )
 }
 
 export default DataCategory
