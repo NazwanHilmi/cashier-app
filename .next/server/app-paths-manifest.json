@@ -1,8 +1,0 @@
-{
-  "/page": "app/page.js",
-  "/data/category/page": "app/data/category/page.js",
-  "/auth/login/page": "app/auth/login/page.js",
-  "/data/type/page": "app/data/type/page.js",
-  "/data/menu/page": "app/data/menu/page.js",
-  "/data/stok/page": "app/data/stok/page.js"
-}
