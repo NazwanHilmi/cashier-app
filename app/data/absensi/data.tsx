@@ -44,22 +44,25 @@ const DataAbsensi = ({ absensi }: { absensi: Absensi[] }) => {
     const handleStatusChange = async (event: React.ChangeEvent<HTMLSelectElement>, id: number) => {
         const status = event.target.value;
         let waktuKeluar = '';
-
+    
         if(status === 'sakit' || status === 'cuti'){
-            waktuKeluar = '00:00:00'
+            waktuKeluar = '00:00:00';
+        } else {
+            // Jika status bukan sakit atau cuti, tetap gunakan waktu_keluar saat ini
+            waktuKeluar = data.find(item => item.id === id)?.waktu_keluar || '';
         }
-
+    
         const newStatus = data.map(item => {
             if (item.id === id) {
-                return { ...item, status: status, waktu_keluar: waktuKeluar};
+                return { ...item, status: status, waktu_keluar: waktuKeluar };
             }
             return item;
         });
         setData(newStatus);
-    
+        
         try {
             const dataUpdate = data.find(item => item.id === id);
-
+    
             if (!dataUpdate) {
                 console.error('Data tidak ditemukan pada ID:', id);
                 return;
@@ -70,10 +73,10 @@ const DataAbsensi = ({ absensi }: { absensi: Absensi[] }) => {
                 "nama": dataUpdate.nama,
                 "tanggal_masuk": dataUpdate.tanggal_masuk,
                 "waktu_masuk": dataUpdate.waktu_masuk,
-                "waktu_keluar": dataUpdate.waktu_keluar,
+                "waktu_keluar": waktuKeluar,
                 "status": status  // Status baru
             };
-
+    
             // Kirim permintaan PUT ke backend untuk memperbarui status
             await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/absensi/${id}`, newData);
             console.log('Status updated successfully!');
@@ -154,8 +157,12 @@ const DataAbsensi = ({ absensi }: { absensi: Absensi[] }) => {
                                     </select>
                                 </td>
                                 <td>
-                                    <span className='mr-4'>{absensi.waktu_keluar}</span>
-                                    <button className='btn btn-sm bg-gray-600 text-white border-none' onClick={() => handleDoneClick(absensi.id)}>Selesai</button>
+                                    {absensi.status === 'masuk' && (
+                                        <React.Fragment>
+                                            <span className='mr-4'>{absensi.waktu_keluar}</span>
+                                            <button className='btn btn-sm bg-gray-600 text-white border-none' onClick={() => handleDoneClick(absensi.id)}>Selesai</button>
+                                        </React.Fragment>
+                                    )}
                                 </td>
                                 <td className='flex items-center justify-center gap-2'>
                                     <EditAbsensi {...absensi} />
