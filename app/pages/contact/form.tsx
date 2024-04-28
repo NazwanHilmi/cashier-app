@@ -1,6 +1,8 @@
 'use client'
 
 import React, { useState } from 'react';
+import Image from 'next/image'
+import Kantor from "/public/images/office.jpg";
 import axios from 'axios';
 import GoogleMapEmbed from './maps';
 
@@ -86,9 +88,12 @@ const ContactPage = () => {
         </div>
 
         <div className='pr-6'>
-          {/* <Image src={AyahLogo} alt="Ayah Coding" /> */}
-          <GoogleMapEmbed />
-          <p> Jalan Siliwangi 41 43212 Cianjur Jawa Barat</p>
+          <div className='text-center'>
+          {/* <Image src={Kantor} alt="My Kantor" width={150} height={140}/> */}
+            <GoogleMapEmbed />
+            <p> Jalan Siliwangi 41 43212 Cianjur Jawa Barat</p>
+
+          </div>
         </div>
 
       </div>

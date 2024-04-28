@@ -37,7 +37,7 @@ const DataCategory = ({category} : {category : Category[]}) => {
     }
     return (
     <div>
-        <header className='w-full p-4 bg-white shadow-lg'>
+        <header className='w-full p-4 bg-white shadow-lg rounded-lg'>
             <h1 className="text-lg font-montserrat font-semibold">{metadata.title}</h1>
         </header>
             <div className="px-10 py-5">

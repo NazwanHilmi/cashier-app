@@ -61,10 +61,10 @@ const AddCategory = () => {
             />
             <div className="modal">
                 <div className="modal-box bg-white border-slate-950">
-                    <h3 className="font-bold text-lg text-slate-800">Add New Category</h3>
+                    <h3 className="font-bold text-lg text-slate-800">Tambah Kategori</h3>
                     <form onSubmit={handleSubmit}>
                         <div className="form-control">
-                            <label className="label font-bold text-slate-800">Name</label>
+                            <label className="label font-bold text-slate-800">Nama</label>
                             <input
                                 type="text"
                                 value={nama}

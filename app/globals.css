@@ -44,3 +44,7 @@ body {
   top:  0;
   height:  100vh;
 }
+
+.form-control input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(100%);
+}

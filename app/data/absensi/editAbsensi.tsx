@@ -10,7 +10,7 @@ type Absensi = {
     id: number;
     nama: string;
     tanggal_masuk: number;
-    waktu_masuk: number;
+    waktu_masuk: string;
     status: string;
     waktu_keluar: string;
 }
@@ -113,15 +113,14 @@ const EditAbsensi = (params: Absensi) => {
                     <input
                         type="time"
                         value={waktuMasuk}
-                        onChange={(e) => setWaktuMasuk(parseInt(e.target.value))}
+                        onChange={(e) => setWaktuMasuk(e.target.value)}
                         className="input w-full input-bordered bg-white text-slate-800 border-slate-300"
                     />
                     <style jsx>{`
                     .form-control input[type="time"]::-webkit-calendar-picker-indicator {
                         filter: invert(100%);
-                    }
-                `}</style>
-                </div>
+                    }`}</style>
+                </div> 
                 <div className="form-control">
                     <label className="label font-bold text-slate-800">Status</label>
                     <select 

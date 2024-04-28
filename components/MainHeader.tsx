@@ -15,8 +15,8 @@ import { FiAlertCircle } from "react-icons/fi";
 import AyahLogo from "/public/images/white-ayahcoding.png";
 import { signOut, useSession } from "next-auth/react";
 import { IoMdContact } from "react-icons/io";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
+import { GiTable } from "react-icons/gi";
+import { TbReportAnalytics } from "react-icons/tb";
 
 type MenuItem = {
   name: ReactElement | string;
@@ -39,7 +39,7 @@ const logout = async (token: string | undefined) => {
 
     return response;
   } catch (error: any) {
-    return error.resp;
+    return error.response;
   }
 };
 
@@ -68,6 +68,12 @@ const menu1: MenuItem[] = [
     link: "/data/menu",
     isActive: false,
   },
+  // {
+  //   name: <h1>Meja</h1>,
+  //   icon: <GiTable size={18} className="text-white" />,
+  //   link: "/data/meja",
+  //   isActive: false,
+  // },
   {
     name: <h1>Stok</h1>,
     icon: <AiOutlineStock size={18} className="text-white" />,
@@ -81,17 +87,17 @@ const menu1: MenuItem[] = [
     isActive: false,
   },
   {
-    name: <h1>Laporan Transaksi</h1>,
-    icon: <FaTableCellsLarge size={18} className="text-white" />,
-    link: "/data/listTransaksi",
+    name: <h1>Laporan</h1>,
+    icon: <TbReportAnalytics size={18} className="text-white" />,
+    link: "/data/laporan",
     isActive: false,
   },
-  {
-    name: <h1>Laporan Detail Transaksi</h1>,
-    icon: <FaTableCellsLarge size={18} className="text-white" />,
-    link: "/data/listDetailTransaksi",
-    isActive: false,
-  },
+  // {
+  //   name: <h1>Laporan Detail Transaksi</h1>,
+  //   icon: <FaTableCellsLarge size={18} className="text-white" />,
+  //   link: "/data/listDetailTransaksi",
+  //   isActive: false,
+  // },
   // {
   //   name: <h1>Produk Titipan</h1>,
   //   icon: <FaProductHunt size={18} className="text-white" />,
@@ -143,9 +149,10 @@ const MainHeader = () => {
       signOut();
 
     } else {
-      console.error(response.data?.message);
+      console.log(response.data?.message);
     }
   };
+
   return (
     <div>
       {status === "authenticated" && (
@@ -160,7 +167,7 @@ const MainHeader = () => {
                 className="mr-2 sm:w-10 sm:h-10"
               />
               <span className="hidden sm:block">
-                <h1 className="font-rubik text-xl text-white">Coffee Shop</h1>
+                <h1 className="font-rubik text-xl text-white">Cashier</h1>
               </span>
               <span className="sm:hidden">
                 <h1 className="font-rubik text-xl">CS</h1>

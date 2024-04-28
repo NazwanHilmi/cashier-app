@@ -28,6 +28,7 @@ const ImportExcel = () => {
     const [isMutating, setIsMutating] = useState(false)
     const [status, setStatus] = useState<any>(null);
     const [message, setMessage] = useState<any>(null);
+    const [error, setError] = useState<any>(null);
     const [modal, setModal] = useState(false)
     const [file, setFile] = useState<undefined | Blob>(undefined)
 
@@ -35,18 +36,31 @@ const ImportExcel = () => {
 
     const handleSubmit = async (event: any) => {
         event.preventDefault()
+
+        if(!file) {
+            setError('Masukan file!')
+            return;
+        }
+
+        setIsMutating(true)
+
         const formData = new FormData()
         formData.append('file', file as Blob)
 
-        const response = await importData(formData);
-        setStatus(response.status)
-        console.log(response)
-        if (response.status == 200) {
-            setIsMutating(false);
-            setMessage("Import data berhasil");
-        } else {
-            setIsMutating(false);
+        try {
+            const response = await importData(formData);
+            setStatus(response.status)
+            console.log(response)
+            if (response.status === 200) {
+                setMessage("Import data berhasil");
+                router.refresh()
+            } else {
+                setIsMutating(false);
+                setMessage('Import data gagal');
+            }
+        } catch (error:any) {
             setMessage('Import data gagal');
+            setIsMutating(false)
         }
     }
 
@@ -67,9 +81,10 @@ const ImportExcel = () => {
 
     const resetState = () => {
         setModal(false);
-        setStatus(false)
-        location.reload()
-    }
+        setStatus(false);
+        setMessage(null);
+        setFile(undefined);
+    };
 
   return (
     <div>
@@ -96,6 +111,7 @@ const ImportExcel = () => {
                                 placeholder="Name Category"
                             />
                         </div>
+                            {error && <div className="text-red-500 font-montserrat italic">{error}</div>}
                         <div className="modal-action">
                             <button type="button" className="btn btn-sm bg-close-btn border-none hover:bg-slate-600 font-medium text-sm text-white" onClick={handleModal}>
                                 Close

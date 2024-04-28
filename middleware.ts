@@ -5,17 +5,22 @@ export default withAuth(
   function middleware(req) {
     const { pathname } = req.nextUrl;
 
-    // cek user sudah login
-    const authPages = ["/auth/login"];
-
-    if (pathname.startsWith("/auth") && req.nextauth?.token)
-      return NextResponse.redirect(new URL(`/data/category`, req.url));
-  
-    // cek user belum login
-    if ((pathname.startsWith('/applications') || pathname.startsWith("/data")) && !req.nextauth?.token)
-      return NextResponse.redirect(
-        new URL(`/auth/login`, req.url)
-      );
+    // Cek user sudah login
+    if (!req.nextauth?.token) {
+      if (pathname === "/") {
+        return NextResponse.redirect(new URL("/auth/login", req.url));
+      }
+      
+      // Jika pengguna belum login 
+      if (pathname.startsWith('/applications') || pathname.startsWith("/data")) {
+        return NextResponse.redirect(new URL("/auth/login", req.url));
+      }
+    } else {
+      // Jika pengguna sudah login 
+      if (pathname.startsWith("/auth")) {
+        return NextResponse.redirect(new URL("/data/category", req.url));
+      }
+    }
 
     return NextResponse.next();
   },
@@ -26,4 +31,4 @@ export default withAuth(
   },
 );
 
-export const config = { matcher: ["/applications/:path*", "/data/:path*", "/auth/:path*"] };
+export const config = { matcher: ["/", "/applications/:path*", "/data/:path*", "/auth/:path*"] };

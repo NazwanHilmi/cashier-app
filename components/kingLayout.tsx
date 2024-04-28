@@ -1,8 +1,12 @@
 "use client"
 import React from "react";
 import MainHeader from "./MainHeader";
-import MainLayout from "./MainLayout";
 import { SessionProvider } from "next-auth/react";
+import Header from "./header";
+import HeaderMobile from "./header-mobile";
+import MarginWidthWrapper from "./margin-width-wrapper";
+import PageWrapper from "./page-wrapper";
+import SideNav from "./side-nav";
 
 export default function KingLayout({
   children,
@@ -10,13 +14,19 @@ export default function KingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex">
-      <SessionProvider>
-        <MainHeader />
+    <SessionProvider>
+      <div className="flex">
+        <SideNav />
         <main className="flex-1 flex-row bg-white">
-          <MainLayout> {children} </MainLayout>
+          <MarginWidthWrapper>
+            <Header />
+            <HeaderMobile />
+            <PageWrapper>
+              {children}
+            </PageWrapper>
+          </MarginWidthWrapper>
         </main>
-      </SessionProvider>
-    </div>
+      </div>
+    </SessionProvider>
   );
 }

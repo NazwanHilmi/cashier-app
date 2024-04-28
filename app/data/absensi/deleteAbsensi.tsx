@@ -10,7 +10,7 @@ type Absensi = {
     id: number;
     nama: string;
     tanggal_masuk: number;
-    waktu_masuk: number;
+    waktu_masuk: string;
     status: string;
     waktu_keluar: string;
 }

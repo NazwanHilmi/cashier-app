@@ -5,13 +5,14 @@ import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
 import SweetAlert from '@/app/components/sweetAlert';
+import { FaPlus } from 'react-icons/fa6';
 
-const API_URL = 'http://127.0.0.1:8000/api'
+const API_URL = (`${process.env.NEXT_PUBLIC_API_URL}`)
 const AddMeja = () => {
     const [modal, setModal] = useState(false)
     const [nomorMeja, setNomorMeja] = useState(0)
     const [kapasitas, setKapasitas] = useState(0)
-    const [statusOptions, setStatusOptions] = useState('Tersedia');
+    const [statusOptions, setStatusOptions] = useState('');
     const [status, setStatus] = useState<any>(null)
     const [message, setMessage] = useState<any>(null)
     const [isMutating, setIsMutating] = useState(false)
@@ -34,7 +35,7 @@ const AddMeja = () => {
                 setIsMutating(false);
                 setNomorMeja(0)
                 setKapasitas(0)
-                setStatusOptions('Tersedia')
+                setStatusOptions('')
     
                 setStatus(res.status)
                 setMessage(res.data.message)
@@ -48,9 +49,9 @@ const AddMeja = () => {
             }
     }
     return (
-        <div>
-            <button className="btn text-white bg-blue-primary hover:bg-blue-600 border-none text-sm font-medium" onClick={handleChange}>
-                Tambah Meja
+        <div className='font-montserrat'>
+            <button className="p-2 rounded-md text-white bg-blue-primary hover:bg-blue-600 border-none text-sm font-medium" onClick={handleChange}>
+                <FaPlus size='20'/>
             </button>
             <input
                 type="checkbox"
@@ -87,9 +88,9 @@ const AddMeja = () => {
                         <div className="form-control">
                             <label className="label font-bold">Status</label>
                             <select className="input w-full input-bordered bg-white text-slate-800 border-slate-300" value={statusOptions} defaultValue={0} onChange={(e) => setStatusOptions(e.target.value)}>
-                                <option disabled value={0}>Pilih Status</option>
-                                <option value="available">Tersedia</option>
-                                <option value="reserved">Terpakai</option>
+                                <option value={0}>Pilih Status</option>
+                                <option value="tersedia">Tersedia</option>
+                                <option value="terpakai">Terpakai</option>
                             </select>
                             </div>
                             <div className="modal-action">

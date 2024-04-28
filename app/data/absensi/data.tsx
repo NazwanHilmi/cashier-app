@@ -4,7 +4,7 @@ export const metadata = {
     title: "Absensi",
 }
 import axios from 'axios'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AddAbsensi from './addAbsensi';
 import DeleteAbsensi from './deleteAbsensi';
 import EditAbsensi from './editAbsensi';
@@ -12,20 +12,23 @@ import ExportPDF from './exportPDF';
 import { useRouter } from 'next/navigation';
 import ExportExcel from './exportExcel';
 import ImportExcel from './importExcel';
+import ReportAbsensi from './report/report';
+import Link from 'next/link';
 
 type Absensi = {
     id: number;
     nama: string;
     tanggal_masuk: number;
-    waktu_masuk: number;
+    waktu_masuk: string;
     status: string;
     waktu_keluar: string;
 }
 
 const DataAbsensi = ({ absensi }: { absensi: Absensi[] }) => {
-    const [data, setData] = useState<Absensi[]>(absensi)
-    const [search, setSearch] = useState("")
-    const [editStatus, setEditStatus] = useState(true)
+    const [data, setData] = useState<Absensi[]>(absensi);
+    const [search, setSearch] = useState("");
+    const [editStatus, setEditStatus] = useState(true);
+    const [finishedIds, setFinishedIds] = useState<number[]>([]);
     const router = useRouter();
 
     const handleSearchData = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,14 +47,13 @@ const DataAbsensi = ({ absensi }: { absensi: Absensi[] }) => {
     const handleStatusChange = async (event: React.ChangeEvent<HTMLSelectElement>, id: number) => {
         const status = event.target.value;
         let waktuKeluar = '';
-    
-        if(status === 'sakit' || status === 'cuti'){
+
+        if (status === 'sakit' || status === 'cuti') {
             waktuKeluar = '00:00:00';
         } else {
-            // Jika status bukan sakit atau cuti, tetap gunakan waktu_keluar saat ini
             waktuKeluar = data.find(item => item.id === id)?.waktu_keluar || '';
         }
-    
+
         const newStatus = data.map(item => {
             if (item.id === id) {
                 return { ...item, status: status, waktu_keluar: waktuKeluar };
@@ -59,15 +61,15 @@ const DataAbsensi = ({ absensi }: { absensi: Absensi[] }) => {
             return item;
         });
         setData(newStatus);
-        
+
         try {
             const dataUpdate = data.find(item => item.id === id);
-    
+
             if (!dataUpdate) {
                 console.error('Data tidak ditemukan pada ID:', id);
                 return;
             }
-            
+
             const newData = {
                 "id": dataUpdate.id,
                 "nama": dataUpdate.nama,
@@ -76,16 +78,15 @@ const DataAbsensi = ({ absensi }: { absensi: Absensi[] }) => {
                 "waktu_keluar": waktuKeluar,
                 "status": status  // Status baru
             };
-    
-            // Kirim permintaan PUT ke backend untuk memperbarui status
+
             await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/absensi/${id}`, newData);
             console.log('Status updated successfully!');
-            router.refresh(); // Refresh halaman setelah perubahan status
+            router.refresh();
         } catch (error) {
             console.error('Error updating status:', error);
         }
     }
-    
+
     const handleDoneClick = async (id: number) => {
         try {
             const newTime = new Date().toLocaleTimeString('en-US', { hour12: false });
@@ -97,9 +98,11 @@ const DataAbsensi = ({ absensi }: { absensi: Absensi[] }) => {
             });
 
             setData(newData);
+            setFinishedIds([...finishedIds, id]);
+            localStorage.setItem('finishedIds', JSON.stringify([...finishedIds, id]));
 
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/absensi/${id}`, { 
-                waktu_keluar: newTime,  
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/absensi/${id}`, {
+                waktu_keluar: newTime,
                 nama: newData.find(item => item.id === id)?.nama,
                 tanggal_masuk: newData.find(item => item.id === id)?.tanggal_masuk,
                 waktu_masuk: newData.find(item => item.id === id)?.waktu_masuk,
@@ -120,60 +123,60 @@ const DataAbsensi = ({ absensi }: { absensi: Absensi[] }) => {
             <div className="px-10 py-5">
                 <div className="py-2 flex justify-between items-end">
                     <div className='flex gap-2'>
-                    <AddAbsensi />
-                    <ExportPDF />
-                    <ExportExcel />
-                    <ImportExcel />
+                        <AddAbsensi />
+                        <ExportPDF />
+                        <ExportExcel />
+                        <ImportExcel />
+                    </div>
+                    <div className='flex gap-2'>
+                        <Link href={'/data/absensi/report'} className='p-2 rounded-md text-white bg-blue-primary hover:bg-blue-600 border-none text-sm font-medium'>Laporan</Link>
+                        <input type="text" id='karyawan' value={search} onChange={handleSearchData} placeholder='Cari Karyawan' className='input input-sm bg-white input-bordered text-sm' />
+                    </div>
                 </div>
-                <div>
-                    <input type="text" id='karyawan' value={search} onChange={handleSearchData} placeholder='Cari Karyawan' className='input input-sm bg-white input-bordered text-sm' />
-                </div>
-            </div>
-            <div className="overflow-x-auto rounded-md">
-                <table className='table'>
-                    <thead>
-                        <tr className='text-white bg-gray-700'>
-                            <th className='text-xs'>No.</th>
-                            <th className='text-xs'>Nama Karyawan</th>
-                            <th className='text-xs'>Tanggal Masuk</th>
-                            <th className='text-xs'>Waktu Masuk</th>
-                            <th className='text-xs'>Status</th>
-                            <th className='text-xs'>Waktu Selesai Kerja</th>
-                            <th className='text-xs text-center'>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.map((absensi, index) => (
-                            <tr key={absensi.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}>
-                                <td>{index + 1}</td>
-                                <td>{absensi.nama}</td>
-                                <td>{absensi.tanggal_masuk}</td>
-                                <td>{absensi.waktu_masuk}</td>
-                                <td>
-                                    <select className='bg-white border border-gray-800 rounded-md px-2 py-2' value={absensi.status} onChange={(e) => handleStatusChange(e, absensi.id)} disabled={!editStatus} >
-                                        <option value="masuk">Masuk</option>
-                                        <option value="sakit">Sakit</option>
-                                        <option value="cuti">Cuti</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    {absensi.status === 'masuk' && (
-                                        <React.Fragment>
-                                            <span className='mr-4'>{absensi.waktu_keluar}</span>
-                                            <button className='btn btn-sm bg-gray-600 text-white border-none' onClick={() => handleDoneClick(absensi.id)}>Selesai</button>
-                                        </React.Fragment>
-                                    )}
-                                </td>
-                                <td className='flex items-center justify-center gap-2'>
-                                    <EditAbsensi {...absensi} />
-                                    <DeleteAbsensi {...absensi} />
-                                </td>
+                <div className="overflow-x-auto rounded-md">
+                    <table className='table'>
+                        <thead>
+                            <tr className='text-white bg-gray-700'>
+                                <th className='text-xs'>No.</th>
+                                <th className='text-xs'>Nama Karyawan</th>
+                                <th className='text-xs'>Tanggal Masuk</th>
+                                <th className='text-xs'>Waktu Masuk</th>
+                                <th className='text-xs'>Status</th>
+                                <th className='text-xs'>Waktu Selesai Kerja</th>
+                                <th className='text-xs text-center'>Action</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {data.map((absensi, index) => (
+                                <tr key={absensi.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}>
+                                    <td>{index + 1}</td>
+                                    <td>{absensi.nama}</td>
+                                    <td>{absensi.tanggal_masuk}</td>
+                                    <td>{absensi.waktu_masuk}</td>
+                                    <td>
+                                        <select className='bg-white border border-gray-800 rounded-md px-2 py-2' value={absensi.status} onChange={(e) => handleStatusChange(e, absensi.id)} disabled={!editStatus} >
+                                            <option value="masuk">Masuk</option>
+                                            <option value="sakit">Sakit</option>
+                                            <option value="cuti">Cuti</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <span className='mr-4'>{absensi.waktu_keluar}</span>
+                                        {/* Tambahkan kondisi untuk menentukan apakah tombol "Selesai" harus ditampilkan */}
+                                        {absensi.status === 'masuk' && !finishedIds.includes(absensi.id) && (
+                                            <button className='btn btn-sm bg-gray-600 text-white border-none' onClick={() => handleDoneClick(absensi.id)}>Selesai</button>
+                                        )}
+                                    </td>
+                                    <td className='flex items-center justify-center gap-2'>
+                                        <EditAbsensi {...absensi} />
+                                        <DeleteAbsensi {...absensi} />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
         </div>
     );
 };
