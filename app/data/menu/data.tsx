@@ -11,6 +11,8 @@ import EditMenu from './editMenu'
 import ExportPDF from './exportPDF'
 import ExportExcel from './exportExcel'
 import ImportExcel from './importExcel'
+import PaginationSection from '@/app/components/pagination'
+import SweetAlert from '@/app/components/sweetAlert'
 
 type Menu = {
     id: number;
@@ -50,12 +52,21 @@ type Category = {
 const DataMenu = ({menu, type, category}: {menu: Menu[], type: Type[], category: Category[]}) => {
     const [data, setData] = useState<Menu[]>(menu)
     const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+    const [status, setStatus] = useState<number | boolean>(false)
+    const [message, setMessage] = useState<string | boolean>(false)
+    const lastItemIndex = currentPage * itemsPerPage;
+    const firstItemIndex = lastItemIndex - itemsPerPage;
+    const currentItems = data.slice(firstItemIndex, lastItemIndex);
+
 
     const handleSearchData = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
 
         if (value.length > 0) {
-            const newData = data.filter((data) => data.nama_menu.toLowerCase().includes(value))
+            const newData = data.filter((data) => data.nama_menu.includes(value) || data.nama_menu.toUpperCase().includes(value) || data.nama_menu.toLowerCase().includes(value))
+
 
             setData(newData)
         } else {
@@ -64,6 +75,12 @@ const DataMenu = ({menu, type, category}: {menu: Menu[], type: Type[], category:
 
 
         setSearch(value)
+    }
+
+    const resetState = () => {
+        setStatus(false)
+        setMessage(false)
+        location.reload()
     }
 
     return (
@@ -98,7 +115,7 @@ const DataMenu = ({menu, type, category}: {menu: Menu[], type: Type[], category:
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((menu, index) => (
+                        {currentItems.map((menu, index) => (
                             <tr key={menu.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}>
                                 <td>{index + 1}</td>
                                 <td>{menu.nama_menu}</td>
@@ -119,6 +136,8 @@ const DataMenu = ({menu, type, category}: {menu: Menu[], type: Type[], category:
                 </table>
             </div>
             </div>
+            <PaginationSection totalItems={data.length} itemsPerPage={itemsPerPage} currentPage={currentPage} setCurrentPage={setCurrentPage} />
+            {status && <SweetAlert status={Number(status)} message={message.toString()}  isTransaksi={false} resetState={resetState} setStatus={setStatus} />}
         </div>
     );
 };

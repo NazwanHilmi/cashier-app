@@ -11,6 +11,8 @@ import EditCategory from './editCategory';
 import ExportPDF from './exportPDF';
 import ExportExcel from './exportExcel';
 import ImportExcel from './importExcel';
+import PaginationSection from '../../components/pagination'
+import SweetAlert from '@/app/components/sweetAlert';
 
 type Category = {
     id: number;
@@ -20,12 +22,19 @@ type Category = {
 const DataCategory = ({category} : {category : Category[]}) => {
     const [data, setData] = useState<Category[]>(category)
     const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+    const [status, setStatus] = useState<number | boolean>(false)
+    const [message, setMessage] = useState<string | boolean>(false)
+    const lastItemIndex = currentPage * itemsPerPage;
+    const firstItemIndex = lastItemIndex - itemsPerPage;
+    const currentItems = data.slice(firstItemIndex, lastItemIndex);
 
     const handleSearchData = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
 
         if (value.length > 0) {
-            const newData = data.filter((data) => data.nama.toLowerCase().includes(value))
+            const newData = data.filter((data) => data.nama.includes(value) || data.nama.toUpperCase().includes(value) || data.nama.toLowerCase().includes(value))
 
             setData(newData)
         } else {
@@ -35,6 +44,13 @@ const DataCategory = ({category} : {category : Category[]}) => {
 
         setSearch(value)
     }
+
+    const resetState = () => {
+        setStatus(false)
+        setMessage(false)
+        location.reload()
+    }
+
     return (
     <div>
         <header className='w-full p-4 bg-white shadow-lg rounded-lg'>
@@ -62,7 +78,7 @@ const DataCategory = ({category} : {category : Category[]}) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((category, index) => (
+                        {currentItems.map((category, index) => (
                             <tr key={category.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}>
                                 <td>{index + 1}</td>
                                 <td>{category.nama}</td>
@@ -76,6 +92,8 @@ const DataCategory = ({category} : {category : Category[]}) => {
                 </table>
             </div>
         </div>
+        <PaginationSection totalItems={data.length} itemsPerPage={itemsPerPage} currentPage={currentPage} setCurrentPage={setCurrentPage} />
+        {status && <SweetAlert status={Number(status)} message={message.toString()}  isTransaksi={false} resetState={resetState} setStatus={setStatus} />}
     </div>
     )
 }

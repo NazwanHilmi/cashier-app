@@ -11,6 +11,8 @@ import EditCustomer from './editCustomer'
 import ExportExcel from './exportExcel'
 import ExportPDF from './exportPDF'
 import ImportExcel from './importExcel'
+import PaginationSection from '@/app/components/pagination'
+import SweetAlert from '@/app/components/sweetAlert'
 
 type Customer = {
     id: number;
@@ -24,6 +26,13 @@ type Customer = {
 const DataCustomer = ({customer}: {customer: Customer[]}) => {
     const [data, setData] = useState<Customer[]>(customer)
     const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+    const [status, setStatus] = useState<number | boolean>(false)
+    const [message, setMessage] = useState<string | boolean>(false)
+    const lastItemIndex = currentPage * itemsPerPage;
+    const firstItemIndex = lastItemIndex - itemsPerPage;
+    const currentItems = data.slice(firstItemIndex, lastItemIndex);
 
     const handleSearchData = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
@@ -39,6 +48,13 @@ const DataCustomer = ({customer}: {customer: Customer[]}) => {
 
         setSearch(value)
     }
+
+    const resetState = () => {
+        setStatus(false)
+        setMessage(false)
+        location.reload()
+    }
+
     return (
         <div>
             <header className='w-full p-4 bg-white shadow-lg'>
@@ -69,7 +85,7 @@ const DataCustomer = ({customer}: {customer: Customer[]}) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((customer, index) => (
+                        {currentItems.map((customer, index) => (
                             <tr key={customer.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}>
                                 <td>{index + 1}</td>
                                 <td>{customer.name}</td>
@@ -86,6 +102,8 @@ const DataCustomer = ({customer}: {customer: Customer[]}) => {
                 </table>
             </div>
         </div>
+        <PaginationSection totalItems={data.length} itemsPerPage={itemsPerPage} currentPage={currentPage} setCurrentPage={setCurrentPage} />
+        {status && <SweetAlert status={Number(status)} message={message.toString()}  isTransaksi={false} resetState={resetState} setStatus={setStatus} />}
         </div>
     );
 };
