@@ -70,20 +70,20 @@ const AddType = ({category}: {category: Category[]}) => {
             />
             <div className="modal">
                 <div className="modal-box bg-white border-slate-950">
-                    <h3 className="font-bold text-lg text-slate-800">Add New Type</h3>
+                    <h3 className="font-bold text-lg text-slate-800">Tambah Jenis</h3>
                     <form onSubmit={handleSubmit}>
                         <div className="form-control">
-                            <label className="label font-bold">Name</label>
+                            <label className="label font-bold">Nama</label>
                             <input
                                 type="text"
                                 value={namaJenis}
                                 onChange={(e) => setNamaJenis(e.target.value)}
                                 className="input w-full input-bordered bg-white text-slate-800 border-slate-300"
-                                placeholder="Type Name"
+                                placeholder="Nama Jenis"
                             />
                         </div>
                         <div className="form-control">
-                            <label className="label font-bold">Category</label>
+                            <label className="label font-bold">Kategori</label>
                             <div className="relative">
                                 <select
                                     value={kategoriId}
@@ -91,7 +91,7 @@ const AddType = ({category}: {category: Category[]}) => {
                                     className="input w-full input-bordered bg-white text-slate-800 border-slate-300"
                                     defaultValue={0}
                                 >
-                                    <option value={0} disabled>Choose Category</option>
+                                    <option value={0} disabled>Pilih Kategori</option>
                                     {category.map((category, index) =>(
                                         <option value={category.id} key={index}>
                                             {category.nama}

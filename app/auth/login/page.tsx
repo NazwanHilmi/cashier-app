@@ -32,7 +32,7 @@ const LoginForm = () => {
             if (res.ok && res.status == 200){
 
                 const updateSession = await getSession();
-                push(`${updateSession?.user}/category`)
+                push(`${updateSession?.user}/`)
             }else {
                 setIsLoading(false)
 

@@ -80,10 +80,10 @@ type Category = {
         />
         <div className="modal">
             <div className="modal-box bg-white border-slate-950">
-            <h3 className="font-bold text-lg text-slate-800">Edit Type {type.nama_jenis}</h3>
+            <h3 className="font-bold text-lg text-slate-800">Edit Jenis {type.nama_jenis}</h3>
             <form onSubmit={handleUpdate}>
                 <div className="form-control">
-                <label className="label font-bold">Name</label>
+                <label className="label font-bold">Nama</label>
                 <input
                     type="text"
                     value={namaJenis}

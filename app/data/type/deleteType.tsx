@@ -60,9 +60,9 @@ const DeleteType = (params: Type) => {
             <div className="modal">
                 <div className="modal-box bg-white text-slate-950">
                     <h3 className="font-bold text-lg">
-                        Are you sure to delete <span className="text-red-600">{params.nama_jenis}</span> ?
+                        Kau yakin ingin menghapus <span className="text-red-600">{params.nama_jenis}</span> ?
                     </h3>
-                    <p className="text-grey-100">This action cannot be canceled</p>
+                    <p className="text-grey-100">Tindakan ini tidak dapat dibatalkan</p>
                     <div className="modal-action">
                         <button type="button" className="btn btn-sm bg-close-btn border-none hover:bg-slate-600 font-medium text-sm text-white" onClick={handleChange}>
                             Close

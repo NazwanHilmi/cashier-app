@@ -87,9 +87,6 @@ const CetakPDF = ({ transaksi}: {transaksi: Transaksi}) => {
                             </tr>
                             <tr className="total">
                                 <td></td>
-                                <td className="text-right">
-                                    Pembayaran: Rp -2000 <br />
-                                </td>
                             </tr>
                             <tr>
                                 <td>
