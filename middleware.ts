@@ -18,7 +18,7 @@ export default withAuth(
     } else {
       // Jika pengguna sudah login 
       if (pathname.startsWith("/auth")) {
-        return NextResponse.redirect(new URL("/data/category", req.url));
+        return NextResponse.redirect(new URL("/", req.url));
       }
     }
 
